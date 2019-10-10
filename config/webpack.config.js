@@ -127,7 +127,11 @@ module.exports = function(webpackEnv) {
           loader: require.resolve(preProcessor),
           options: {
             sourceMap: true,
-          },
+            modules: false,
+            modifyVars: {
+                "@primary-color": "#f9c700"
+            }
+          },          
         }
       );
     }
@@ -485,7 +489,7 @@ module.exports = function(webpackEnv) {
               exclude: lessModuleRegex,
               use: getStyleLoaders(
                 {
-                  importLoaders: 2,
+                  importLoaders: 3,
                   sourceMap: isEnvProduction && shouldUseSourceMap,
                 },
                 'less-loader'
@@ -502,7 +506,7 @@ module.exports = function(webpackEnv) {
               test: lessModuleRegex,
               use: getStyleLoaders(
                 {
-                  importLoaders: 2,
+                  importLoaders: 3,
                   sourceMap: isEnvProduction && shouldUseSourceMap,
                   modules: true,
                   getLocalIdent: getCSSModuleLocalIdent,
