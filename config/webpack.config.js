@@ -129,7 +129,7 @@ module.exports = function(webpackEnv) {
             sourceMap: true,
             modules: false,
             modifyVars: {
-                "@primary-color": "#f9c700"
+                "@primary-color": "#1890ff"
             }
           },          
         }

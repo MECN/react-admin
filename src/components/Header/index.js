@@ -1,8 +1,9 @@
 import React, {Component } from 'react';
-import {Row,Col} from 'antd'
+import {Row,Col,Modal} from 'antd'
 import Util from '../../util/util.js'
 import axios from '../../axios'
-// console.log(Util)
+import menuList from '../../config/menuConfig'
+import {withRouter} from 'react-router-dom'
 import './index.less'
 class Index extends Component {
     constructor(props) {
@@ -34,19 +35,46 @@ class Index extends Component {
             }
         })
     }
+    getTitle=()=>{
+        let path=this.props.location.pathname;
+        let title;
+        menuList.forEach(v=>{
+            if(v.key===path){
+                title=v.title
+            }else if(v.children){
+                let cItem=v.children.find(j=>j.key===path)
+                if(cItem){
+                    title=cItem.title;
+                }
+            }
+        })
+        return title;
+    }
+    logout=()=>{
+        Modal.confirm({
+            title: '提示',
+            content: '是否退出登录',
+            okText: '确认',
+            cancelText: '取消',
+            onOk:()=>{
+                this.props.history.replace('/login')
+            }
+          });
+    }
     render() { 
+        const title=this.getTitle();
         return ( 
             <div className="header">
                 <Row className="header-top">
                    <Col>欢迎，MECN
-                    <a href="baidu.com">退出</a>
+                    <a href="javascript:" onClick={this.logout}>退出</a>
                    </Col>
                 </Row>
                 <Row className="breadcrumb">
                     <Col span={4} className="breadcrumb-title">
-                        首页
+                        {title}
                     </Col>
-                    <Col span="20" className="weather">
+                    <Col span={20} className="weather">
                         <span className="date">{this.state.sysTime}</span>
                         <span className="weather-img">
                             <img src={this.state.dayPictureUrl} alt="" />
@@ -61,4 +89,4 @@ class Index extends Component {
     }
 }
  
-export default Index;
+export default withRouter(Index);

@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import './index.less'
-import { Form, Icon, Input, Button } from 'antd';
-
+import { Form, Icon, Input, Button,message } from 'antd';
+import {reqLogin} from '../../api'
+// import memory from '../../util/memory'
+import storage from '../../util/storage'
 /* 
     登录组件
 */
@@ -22,9 +24,19 @@ class Login extends Component {
     }
     handleSubmit = e => {
         e.preventDefault();//阻止默认行为
-        this.props.form.validateFields((err, values) => {
+        this.props.form.validateFields(async(err, values) => {
           if (!err) {
             console.log('Received values of form: ', values);
+            let param=values;
+            let result=await reqLogin(param)
+            if(result.status==0){
+                message.success('登录成功')
+                const user=result.data;
+                storage.saveUser(user)
+                this.props.history.replace('/')
+            }else{
+                message.error(result.msg)
+            }
           }
         });
       };
@@ -34,7 +46,7 @@ class Login extends Component {
             <div className="login">
                 <header className="login-header">
                     <img src="" alt="logo"></img>
-                    <h1>React后台管理系统</h1>
+                    <h1>后台管理系统</h1>
                 </header>
                 <section className="login-content">
                     <h2>用户登录</h2>

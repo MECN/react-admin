@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import {Link } from 'react-router-dom'
+import {Link,withRouter } from 'react-router-dom'
 import menuList from '../../config/menuConfig'
 import { Menu} from 'antd';
 import './index.less'
 const { SubMenu } = Menu;
 
 console.log(menuList)
-class Index extends Component {
+class Sidebar extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -22,7 +22,7 @@ class Index extends Component {
     }
     // 菜单点击
     handleClick = ({ item, key }) => {
-        if (key === this.state.currentKey) {
+        if (key === this.currentKey) {
             return false;
         }
         // // 事件派发，自动调用reducer，通过reducer保存到store对象中
@@ -35,8 +35,14 @@ class Index extends Component {
     };
      // 菜单渲染
      renderMenu =(data)=>{
+        const path=this.props.location.pathname;
         return data.map((item)=>{
             if(item.children){
+                const cItem=item.children.find(v=>v.key===path)
+                if(cItem){
+                    this.currentKey=item.key
+                    console.log(this.currentKey)
+                }                
                 return (
                     <SubMenu title={item.title} key={item.key}>
                         { this.renderMenu(item.children)}
@@ -49,6 +55,10 @@ class Index extends Component {
         })
     }
 render() {
+    const path=this.props.location.pathname;
+    const currentKey=this.currentKey
+    console.log('render()'+path)
+    console.log('render()'+currentKey)
     return (
         <div>
             <Link to="/home" onClick={this.han}>
@@ -58,9 +68,12 @@ render() {
             </div>
             </Link>
             <Menu
-                    onClick={this.handleClick}
+                    // onClick={this.handleClick}
                     theme="dark"
-                >
+                    mode="inline"
+                    selectedKeys={[path]}
+                    defaultOpenKeys={[currentKey]}
+                    >
                     { this.state.menuTreeNode }
                 </Menu>
         </div>
@@ -68,4 +81,4 @@ render() {
 }
 }
 
-export default Index;
+export default withRouter(Sidebar);
